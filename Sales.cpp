@@ -5,101 +5,209 @@
 #include <string>
 #include <algorithm>
 #include <filesystem>
+#include <random>
 using namespace std;
+vector<int> use_id;
 
 bool allitems = true;
 
+int generateUniqueID()
+{
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_int_distribution<> dist(1000, 9999);
+ 
+    int id;
+    do {
+        id = dist(gen);
+    } while (find(use_id.begin(), use_id.end(), id) != use_id.end());
+ 
+    use_id.push_back(id);
+    return id;
+}
+
+
 // Function to split CSV line into tokens
-vector<string> split(const string& line, char delimiter = ',') {
+vector<string> split(const string &line, char delimiter = ',')
+{
     vector<string> tokens;
     string token;
     stringstream ss(line);
-    while (getline(ss, token, delimiter)) {
+    while (getline(ss, token, delimiter))
+    {
         tokens.push_back(token);
     }
     return tokens;
 }
 
 // Function to join vector into CSV line
-string join(const vector<string>& tokens, char delimiter = ',') {
+string join(const vector<string> &tokens, char delimiter = ',')
+{
     string result;
-    for (size_t i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++)
+    {
         result += tokens[i];
-        if (i < tokens.size() - 1) result += delimiter;
+        if (i < tokens.size() - 1)
+            result += delimiter;
     }
     return result;
 }
 
-void UpdateOrDelete(const string& file){
- 
-    string salesIdToUpdate;
+// Sorting the data by dates
+void SortByDate(const string& filename) {
+    ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        cerr << "Error opening file!" << endl;
+        return;
+    }
+
+    string header;
+    getline(inFile, header); // Read and preserve header
+
+    vector<vector<string>> rows;
+    string line;
+
+    while (getline(inFile, line)) {
+        vector<string> row = split(line);
+        if (!row.empty()) {
+            rows.push_back(row);
+        }
+    }
+    inFile.close();
+
+    // Sort rows by date (first column)
+    sort(rows.begin(), rows.end(), [](const vector<string>& a, const vector<string>& b) {
+        return b[0] > a[0]; // Lexicographical comparison of YYYY/MM/DD
+    });
+
+    ofstream outFile("temp.csv");
+    outFile << header << "\n"; // Write header back
+    for (const auto& row : rows) {
+        outFile << join(row) << "\n";
+    }
+    outFile.close();
+
+    cout << "CSV data sorted by date successfully!\n";
+}
+
+void Deleted(const string& filename,string salesIdToUpdate){
+     ifstream inFile(filename);
+    vector<string> lines;
+    string line;
+    bool deleted = false;
+    while (getline(inFile, line))
+        {
+
+            vector<string> row = split(line);
+
+            if (!row.empty() && row[1] == salesIdToUpdate)
+            {
+                cout << "Current record: " << line << endl;
+                deleted=true;
+            }
+            else
+            {
+                lines.push_back(line);
+            }
+        }
+        if (deleted)
+        {
+            ofstream outFile("sales.csv");
+            for (const auto &l : lines)
+            {
+                outFile << l << "\n";
+            }
+            outFile.close();
+            cout << "Record deleted successfully!" << endl;
+        }
+        else
+        {
+            cout << "Sales ID not found." << endl;
+        }
+       
+}
+void Update(const string& filename,string salesIdToUpdate){
+    ifstream inFile(filename);
+    vector<string> lines;
+    string line;
+    bool updated = false;
+
+        while (getline(inFile, line))
+        {
+
+            vector<string> row = split(line);
+
+            if (!row.empty() && row[1] == salesIdToUpdate)
+            {
+                cout << "Current record: " << line << endl;
+
+
+                cout << "Enter the Unit price Date. \n";
+                string unitpriceDate;
+                cin >> unitpriceDate;
+                cout << "Enter the Description \n";
+                string Description;
+                cin >> Description;
+                cout << "Enter the item quantity.\n";
+                string itemquantity;
+                cin >> itemquantity;
+                cout << "Enter the unitprice.\n";
+                string unitprice;
+                cin >> unitprice;
+                row[0] = unitpriceDate;
+                row[2] = Description;
+                row[3] = itemquantity;
+                row[4] = unitprice;
+
+                line = join(row);
+
+                updated = true;
+            }
+            lines.push_back(line);
+            // inFile.close();
+        }
+        if (updated)
+        {
+            ofstream outFile("sales.csv");
+            for (const auto &l : lines)
+            {
+                outFile << l << "\n";
+            }
+            outFile.close();
+            cout << "Record updated successfully!" << endl;
+        }
+}
+
+
+
+void UpdateOrDelete(const string &file)
+{
+
+     string salesIdToUpdate;
     cout << "Enter Sales ID to update: ";
     cin >> salesIdToUpdate;
 
-    
     cout << "Do you want to Update or Delete (u or d).\n";
     char upordel;
     cin >> upordel;
 
-    if(upordel=='y'){
-        
-    }
-
-    
- 
     ifstream inFile(file);
-    if (!inFile.is_open()) {
+    if (!inFile.is_open())
+    {
         cerr << "Error opening file!" << endl;
-        return ;
+        return;
     }
- 
-    vector<string> lines;
-    string line;
-    bool updated = false;
- 
-    // Read file line by line
-    while (getline(inFile, line)) {
 
-        vector<string> row = split(line);
- 
-        // Assuming SalesID is the first column
-        if (!row.empty() && row[0] == salesIdToUpdate) {
-            cout << "Current record: " << line << endl;
-            // Example: Update amount (3rd column)
-            cout << "Enter new amount: ";
-            string newAmount;
-            string name;
-            cin >> newAmount;
-            cout << "Enter new amount: ";
-            cin >> name;
-            row[2] = newAmount;  
-            row[1] = name;
- 
-            line = join(row);
-           
-            updated = true;
-        }
-    lines.push_back(line);
-        
-       
+    if(upordel=='u'){
+        Update("sales.csv",salesIdToUpdate);
     }
-    inFile.close();
- 
-    if (updated) {
-        ofstream outFile("C:\\Users\\vishvalingam.kumaran\\Documents\\sample\\sample.csv");
-        for (const auto& l : lines) {
-            outFile << l << "\n";
-        }
-        outFile.close();
-        cout << "Record updated successfully!" << endl;
-    } else {
-        cout << "Sales ID not found." << endl;
-    }
- 
-    return ;
 
+    if(upordel=='d'){
+        Deleted("sales.csv",salesIdToUpdate);
+    }
+    
+   
 }
-
 
 // date nomal validation:::::
 bool isValidDateFormat(const string &date)
@@ -123,7 +231,7 @@ bool isValidDateFormat(const string &date)
 }
 
 // View.......
-void View(const string& filename)
+void View(const string &filename)
 {
     fstream file(filename);
     string line;
@@ -173,12 +281,10 @@ void AddItems()
         if (!isValidDateFormat(date))
         {
             cout << "Invalid Format";
-            return;
+            View("sales.csv");
         }
 
-        cout << "Enter Sale ID: ";
-        cin >> saleID;
-        cin.ignore();
+        saleID = generateUniqueID();
 
         cout << "Enter Item Name: ";
         getline(cin, itemName);
@@ -205,7 +311,6 @@ void AddItems()
 
     cout << "\n Data successfully written to sales.csv\n";
     View("sales.csv");
-    cout <<"return st";
 }
 
 int main()
@@ -215,12 +320,14 @@ int main()
     char updateOrdelete;
     cout << "Do you want to update or delete? y or n";
     cin >> updateOrdelete;
-    
-    if(updateOrdelete){
+
+    if (updateOrdelete == 'y')
+    {
         UpdateOrDelete("sales.csv");
     }
 
+    SortByDate("sales.csv");
     // sort();
-    
+
     return 0;
 }
