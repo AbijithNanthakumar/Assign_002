@@ -4,14 +4,101 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <filesystem>
 using namespace std;
 
 bool allitems = true;
 
-#include <string>
-#include <filesystem>
-using namespace std;
+// Function to split CSV line into tokens
+vector<string> split(const string& line, char delimiter = ',') {
+    vector<string> tokens;
+    string token;
+    stringstream ss(line);
+    while (getline(ss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
 
+// Function to join vector into CSV line
+string join(const vector<string>& tokens, char delimiter = ',') {
+    string result;
+    for (size_t i = 0; i < tokens.size(); i++) {
+        result += tokens[i];
+        if (i < tokens.size() - 1) result += delimiter;
+    }
+    return result;
+}
+
+void UpdateOrDelete(const string& file){
+ 
+    string salesIdToUpdate;
+    cout << "Enter Sales ID to update: ";
+    cin >> salesIdToUpdate;
+
+    
+    cout << "Do you want to Update or Delete (u or d).\n";
+    char upordel;
+    cin >> upordel;
+
+    if(upordel=='y'){
+        
+    }
+
+    
+ 
+    ifstream inFile(file);
+    if (!inFile.is_open()) {
+        cerr << "Error opening file!" << endl;
+        return ;
+    }
+ 
+    vector<string> lines;
+    string line;
+    bool updated = false;
+ 
+    // Read file line by line
+    while (getline(inFile, line)) {
+
+        vector<string> row = split(line);
+ 
+        // Assuming SalesID is the first column
+        if (!row.empty() && row[0] == salesIdToUpdate) {
+            cout << "Current record: " << line << endl;
+            // Example: Update amount (3rd column)
+            cout << "Enter new amount: ";
+            string newAmount;
+            string name;
+            cin >> newAmount;
+            cout << "Enter new amount: ";
+            cin >> name;
+            row[2] = newAmount;  
+            row[1] = name;
+ 
+            line = join(row);
+           
+            updated = true;
+        }
+    lines.push_back(line);
+        
+       
+    }
+    inFile.close();
+ 
+    if (updated) {
+        ofstream outFile("C:\\Users\\vishvalingam.kumaran\\Documents\\sample\\sample.csv");
+        for (const auto& l : lines) {
+            outFile << l << "\n";
+        }
+        outFile.close();
+        cout << "Record updated successfully!" << endl;
+    } else {
+        cout << "Sales ID not found." << endl;
+    }
+ 
+    return ;
+
+}
 
 
 // date nomal validation:::::
@@ -125,8 +212,15 @@ int main()
 {
 
     AddItems();
-    string updateOrdelete;
-    cout << "Do you want to update or delete?";
+    char updateOrdelete;
+    cout << "Do you want to update or delete? y or n";
     cin >> updateOrdelete;
+    
+    if(updateOrdelete){
+        UpdateOrDelete("sales.csv");
+    }
+
+    // sort();
+    
     return 0;
 }
