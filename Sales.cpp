@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <vector>
 #include <string>
-#include <filesystem>
+#include <algorithm>
 using namespace std;
 
 
@@ -27,6 +29,18 @@ bool isValidDateFormat(const string& date) {
     return true;
 }
 
+void View(fstream &file){
+    if(!file){
+        cout << "Error Opening the file.\n";
+        return;
+    }
+
+    while(getline(line,file))
+
+
+
+
+}
 
 void AddItems() {
     string filename = "sales.csv";
@@ -78,7 +92,8 @@ void AddItems() {
     }
 
     file.close();
-    cout << "\n✅ Data successfully written to sales.csv\n";
+    cout << "\n Data successfully written to sales.csv\n";
+    View(file);
 }
 
 int main() {
