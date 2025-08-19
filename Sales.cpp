@@ -7,10 +7,30 @@ using namespace std;
 
 bool allitems = true;
 
+
+#include <string>
+using namespace std;
+
+bool isValidDateFormat(const string& date) {
+    // Must be exactly 10 characters: YYYY/MM/DD
+    if (date.length() != 10) return false;
+
+    // Check slashes at correct positions
+    if (date[4] != '/' || date[7] != '/') return false;
+
+    // Check digits in YYYY, MM, DD
+    for (int i = 0; i < date.length(); ++i) {
+        if (i == 4 || i == 7) continue;
+        if (!isdigit(date[i])) return false;
+    }
+
+    return true;
+}
+
+
 void AddItems() {
     string filename = "sales.csv";
 
-    // Check if file exists to avoid rewriting header
     bool fileExists = filesystem::exists(filename);
 
     fstream file(filename, ios::app | ios::out);
@@ -23,10 +43,14 @@ void AddItems() {
         string date, itemName, isallitems;
         int saleID, quantity, unitPrice;
 
-        cout << "\nEnter Unit Price Date (e.g., ): ";
+        cout << "\nEnter Unit Price Date YYYY/MM/DD: ";
         getline(cin, date);
-
-
+        if(!isValidDateFormat(date))
+        {
+            cout << "Invalid Format";
+            return;
+        }
+        
         cout << "Enter Sale ID: ";
         cin >> saleID;
         cin.ignore();
