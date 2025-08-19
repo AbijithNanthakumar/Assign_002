@@ -1,0 +1,90 @@
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2001/03/23   |      3 | kkkkkkk  |        3 |  2233 |        6699
+2001/03/23   |      3 | jehfinfwk |        2 |    22 |          44
+
+Subtotal for 2001/03/23 is: 6743.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2002/12/1    |   7430 | Book     |        1 |   200 |         200
+
+Subtotal for 2002/12/1 is: 200.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2003/02/02   |  22342 | foifnkngn |        2 |    22 |          44
+
+Subtotal for 2003/02/02 is: 44.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2003/04/04   |     22 | jforfnnfk |        2 |    21 |          42
+
+Subtotal for 2003/04/04 is: 42.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2003/05/05   | 2323443 | okdhwiwefnf |       22 |     1 |          22
+2003/05/05   |      2 | anirudh  |        2 |    21 |          42
+
+Subtotal for 2003/05/05 is: 64.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2003/09/09   |    234 | note     |        2 |     3 |           6
+
+Subtotal for 2003/09/09 is: 6.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2003/11/11   |   2345 | oencil   |        3 |     4 |          12
+
+Subtotal for 2003/11/11 is: 12.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2006/4/21    |   9241 | pocketnote |        1 |    29 |          29
+
+Subtotal for 2006/4/21 is: 29.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2020/02/13   |      3 | laptop   |        1 | 40000 |       40000
+
+Subtotal for 2020/02/13 is: 40000.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2022/3/11    |     14 | phone    |        1 | 20000 |       20000
+
+Subtotal for 2022/3/11 is: 20000.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2023/03/03   |  22442 | oksfohfirfh |        2 |    22 |          44
+
+Subtotal for 2023/03/03 is: 44.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2023/04/10   |     23 | jehfinfwk |        2 |    20 |          40
+
+Subtotal for 2023/04/10 is: 40.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2023/10/05   |   3444 | knfjdfjdf |        3 |    34 |         102
+2023/10/05   |     77 | kkyutftd |        9 |    10 |          90
+
+Subtotal for 2023/10/05 is: 192.
+
+Date          SaleID   ItemName   Quantity   Price   SalesAmount
+-------------------------------------------------------------
+2025/8/19    |   2314 | vjjjjnvjf |        2 |    34 |          68
+
+Subtotal for 2025/8/19 is: 68.
+
+=============================
+Grand Total: 67484
+=============================

@@ -4,28 +4,13 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <map>
 #include <filesystem>
 #include <random>
 using namespace std;
 vector<int> use_id;
 
 bool allitems = true;
-
-int generateUniqueID()
-{
-    static random_device rd;
-    static mt19937 gen(rd());
-    uniform_int_distribution<> dist(1000, 9999);
- 
-    int id;
-    do {
-        id = dist(gen);
-    } while (find(use_id.begin(), use_id.end(), id) != use_id.end());
- 
-    use_id.push_back(id);
-    return id;
-}
-
 
 // Function to split CSV line into tokens
 vector<string> split(const string &line, char delimiter = ',')
@@ -52,6 +37,89 @@ string join(const vector<string> &tokens, char delimiter = ',')
     }
     return result;
 }
+
+void Report(const string& filename) {
+    ifstream report(filename);
+    if (!report.is_open()) {
+        cerr << "Error opening file!" << endl;
+        return;
+    }
+
+    string header;
+    getline(report, header); // Skip header
+
+    map<string, vector<vector<string>>> groupedData;
+    string line;
+
+    while (getline(report, line)) {
+        vector<string> row = split(line);
+        if (row.size() >= 5) {
+            groupedData[row[0]].push_back(row); // Group by date
+        }
+    }
+    report.close();
+
+    ofstream reportFile("report.txt");
+    if (!reportFile.is_open()) {
+        cerr << "Error creating report file!" << endl;
+        return;
+    }
+
+    double grandTotal = 0.0;
+
+    for (const auto& [date, entries] : groupedData) {
+        reportFile << "Date          SaleID   ItemName   Quantity   Price   SalesAmount\n";
+        reportFile << "-------------------------------------------------------------\n";
+
+        double subtotal = 0.0;
+
+        for (const auto& row : entries) {
+            string saleID = row[1];
+            string itemName = row[2];
+            int quantity = stoi(row[3]);
+            double price = stod(row[4]);
+            double salesAmount = quantity * price;
+            subtotal += salesAmount;
+
+            reportFile << setw(13) << left << date << "| "
+                       << setw(6) << right << saleID << " | "
+                       << setw(8) << left << itemName << " | "
+                       << setw(8) << right << quantity << " | "
+                       << setw(5) << right << price << " | "
+                       << setw(11) << right << salesAmount << "\n";
+        }
+
+        reportFile << "\nSubtotal for " << date << " is: " << subtotal << ".\n\n";
+        grandTotal += subtotal;
+    }
+
+    reportFile << "=============================\n";
+    reportFile << "Grand Total: " << grandTotal << "\n";
+    reportFile << "=============================\n";
+
+    reportFile.close();
+    cout << "Report generated successfully in report.txt\n";
+}
+
+
+
+int generateUniqueID()
+{
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_int_distribution<> dist(1000, 9999);
+ 
+    int id;
+    do {
+        id = dist(gen);
+    } while (find(use_id.begin(), use_id.end(), id) != use_id.end());
+ 
+    use_id.push_back(id);
+    return id;
+}
+
+
+
 
 // Sorting the data by dates
 void SortByDate(const string& filename) {
@@ -126,6 +194,8 @@ void Deleted(const string& filename,string salesIdToUpdate){
         }
        
 }
+
+
 void Update(const string& filename,string salesIdToUpdate){
     ifstream inFile(filename);
     vector<string> lines;
@@ -212,16 +282,15 @@ void UpdateOrDelete(const string &file)
 // date nomal validation:::::
 bool isValidDateFormat(const string &date)
 {
-    if (date.length() != 10)
-        return false;
-
-    if (date[4] != '/' || date[7] != '/')
+    if (date.length() > 10)
         return false;
 
     // Check digits in YYYY, MM, DD
     for (int i = 0; i < date.length(); ++i)
     {
-        if (i == 4 || i == 7)
+        if (date[i]=='/' && date[i]=='/'){
+            continue;
+        }
             continue;
         if (!isdigit(date[i]))
             return false;
@@ -327,7 +396,8 @@ int main()
     }
 
     SortByDate("sales.csv");
-    // sort();
+    
+    Report("sales.csv");
 
     return 0;
 }
